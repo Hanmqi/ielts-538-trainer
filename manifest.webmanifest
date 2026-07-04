@@ -1,0 +1,18 @@
+{
+  "name": "IELTS 538 每日同义替换训练",
+  "short_name": "IELTS 538",
+  "description": "IELTS reading synonym replacement daily trainer.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f6f4",
+  "theme_color": "#17342c",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

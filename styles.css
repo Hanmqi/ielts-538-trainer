@@ -1,0 +1,431 @@
+:root {
+  --bg: #f3f6f4;
+  --panel: #ffffff;
+  --text: #17211d;
+  --muted: #66736d;
+  --line: #d9e3de;
+  --soft: #eef5f2;
+  --accent: #176f5b;
+  --accent-dark: #0e5746;
+  --blue: #2c62a0;
+  --red: #b64242;
+  --green-soft: #e7f6ee;
+  --red-soft: #fff0f0;
+  --shadow: 0 16px 36px rgba(20, 38, 32, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 34px;
+}
+
+.settings {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.settings label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.tab,
+.ghost-btn,
+.primary-btn,
+.danger-btn,
+.warn-btn,
+.speak-btn,
+.option-btn,
+.match-btn {
+  min-height: 42px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.tab {
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: #17342c;
+  border-color: #17342c;
+  color: #fff;
+}
+
+.primary-btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background: var(--accent-dark);
+}
+
+.danger-btn {
+  background: var(--red-soft);
+  border-color: #e4b0b0;
+  color: var(--red);
+}
+
+.warn-btn {
+  background: #fff8e9;
+  border-color: #e7cc8c;
+  color: #9a650f;
+}
+
+.ghost-btn:hover,
+.option-btn:hover,
+.match-btn:hover {
+  border-color: var(--blue);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary div,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.summary div {
+  padding: 14px;
+}
+
+.summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.summary strong {
+  font-size: 26px;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.panel {
+  padding: 22px;
+}
+
+.word-card,
+.quiz-card {
+  position: relative;
+  min-height: 520px;
+}
+
+.card-count {
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.speak-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  min-width: 64px;
+  padding: 0;
+  font-size: 14px;
+}
+
+.word-meta {
+  color: var(--muted);
+  margin: 12px 0 22px;
+}
+
+.answer-box {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.answer-box div,
+.feedback {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.answer-box span,
+.prompt-label {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.answer-box strong {
+  display: block;
+  font-size: 26px;
+}
+
+.answer-box p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.option-btn {
+  text-align: left;
+  min-height: 64px;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.option-btn.correct {
+  background: var(--green-soft);
+  border-color: #6db78f;
+}
+
+.option-btn.wrong {
+  background: var(--red-soft);
+  border-color: #d98585;
+}
+
+.feedback {
+  margin-top: 16px;
+  line-height: 1.55;
+}
+
+.feedback.good {
+  background: var(--green-soft);
+}
+
+.feedback.bad {
+  background: var(--red-soft);
+}
+
+.hidden {
+  display: none;
+}
+
+.match-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.match-head p {
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+
+.match-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.match-col {
+  display: grid;
+  gap: 10px;
+}
+
+.mistake-list {
+  display: grid;
+  gap: 10px;
+}
+
+.mistake-item {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.mistake-item strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mistake-item span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.mistake-item p {
+  margin: 8px 0 0;
+}
+
+.match-btn {
+  text-align: left;
+  min-height: 48px;
+  overflow-wrap: anywhere;
+}
+
+.match-btn.selected {
+  border-color: var(--blue);
+  background: #eef5ff;
+}
+
+.match-btn.done {
+  background: var(--green-soft);
+  color: #39644e;
+  text-decoration: line-through;
+}
+
+.loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.loading.hidden {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .app {
+    width: min(100vw - 24px, 560px);
+    padding-top: 16px;
+  }
+
+  .topbar,
+  .match-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings {
+    justify-content: stretch;
+  }
+
+  .settings label,
+  .settings button {
+    width: 100%;
+  }
+
+  .summary,
+  .options,
+  .match-board {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 28px;
+    overflow-wrap: anywhere;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .word-card,
+  .quiz-card {
+    min-height: auto;
+  }
+}

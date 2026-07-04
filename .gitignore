@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+anki_deck_requirements.md
+需求.txt
+build_ielts_reading_538_deck.py
+ielts_reading_538.apkg
+ielts_reading_538_import.tsv
+ielts_reading_538_build_report.md
+ielts538_json_enriched/*.json
+!ielts538_json_enriched/words.json
+ielts538_json_enriched/*.md

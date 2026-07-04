@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IELTS 538 每日训练</title>
+    <meta name="theme-color" content="#17342c">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="todayText">Daily Practice</p>
+          <h1>IELTS 538 每日同义替换训练</h1>
+        </div>
+        <div class="settings">
+          <label>
+            每日词数
+            <select id="dailyCount">
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20" selected>20</option>
+              <option value="30">30</option>
+            </select>
+          </label>
+          <button id="resetTodayBtn" class="ghost-btn">重置今日</button>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="训练模式">
+        <button class="tab active" data-view="learn">今日学习</button>
+        <button class="tab" data-view="review">复习</button>
+        <button class="tab" data-view="quiz">选择题</button>
+        <button class="tab" data-view="match">连线题</button>
+        <button class="tab" data-view="mistakes">错题本</button>
+      </nav>
+
+      <section class="summary">
+        <div><span>今日词组</span><strong id="summaryWords">0</strong></div>
+        <div><span>已学</span><strong id="summarySeen">0</strong></div>
+        <div><span>今日测试</span><strong id="summaryQuiz">0/0</strong></div>
+        <div><span>待复习</span><strong id="summaryReview">0</strong></div>
+        <div><span>错题</span><strong id="summaryMistakes">0</strong></div>
+      </section>
+
+      <section id="learn" class="view active">
+        <div class="panel word-card">
+          <div class="card-count" id="learnProgress">1 / 20</div>
+          <button id="speakBtn" class="speak-btn" title="播放读音">Play</button>
+          <h2 id="wordTitle">loading</h2>
+          <div class="word-meta" id="wordMeta"></div>
+          <div class="answer-box">
+            <div>
+              <span>最常见替换</span>
+              <strong id="primarySynonym"></strong>
+            </div>
+            <div>
+              <span>全部替换</span>
+              <p id="allSynonyms"></p>
+            </div>
+            <div>
+              <span>中文辅助</span>
+              <p id="meaningCn"></p>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button id="prevWord" class="ghost-btn">上一个</button>
+            <button id="nextWord" class="primary-btn">下一个</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="review" class="view">
+        <div class="panel word-card">
+          <div class="card-count" id="reviewProgress">待复习 0</div>
+          <button id="reviewSpeakBtn" class="speak-btn" title="播放读音">Play</button>
+          <h2 id="reviewWordTitle">暂无复习</h2>
+          <div class="word-meta" id="reviewWordMeta"></div>
+          <div class="answer-box">
+            <div>
+              <span>最常见替换</span>
+              <strong id="reviewPrimarySynonym"></strong>
+            </div>
+            <div>
+              <span>全部替换</span>
+              <p id="reviewAllSynonyms"></p>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="danger-btn" data-review-grade="again">不会</button>
+            <button class="warn-btn" data-review-grade="hard">模糊</button>
+            <button class="primary-btn" data-review-grade="good">认识</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="quiz" class="view">
+        <div class="panel quiz-card">
+          <div class="card-count" id="quizProgress">第 1 / 40 题</div>
+          <p class="prompt-label">选择最贴近的表达</p>
+          <h2 id="quizPrompt"></h2>
+          <div id="quizOptions" class="options"></div>
+          <div id="quizFeedback" class="feedback hidden"></div>
+          <div class="card-actions">
+            <button id="nextQuiz" class="primary-btn">下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="match" class="view">
+        <div class="panel">
+          <div class="match-head">
+            <div>
+              <h2>今日词组连线</h2>
+              <p>左边是今日主词，右边是最常见替换。</p>
+            </div>
+            <button id="newMatch" class="ghost-btn">重新洗牌</button>
+          </div>
+          <div class="match-board">
+            <div id="leftWords" class="match-col"></div>
+            <div id="rightWords" class="match-col"></div>
+          </div>
+          <div id="matchFeedback" class="feedback hidden"></div>
+        </div>
+      </section>
+
+      <section id="mistakes" class="view">
+        <div class="panel">
+          <div class="match-head">
+            <div>
+              <h2>错题本</h2>
+              <p>选择题和连线题答错后会进入这里，并自动加入复习。</p>
+            </div>
+            <button id="clearMistakesBtn" class="ghost-btn">清空错题</button>
+          </div>
+          <div id="mistakeList" class="mistake-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="loading" class="loading">正在加载题库...</div>
+    <script src="./app.js"></script>
+  </body>
+</html>
