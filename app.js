@@ -555,33 +555,7 @@ function makeSentenceQuestion(word, pool, random) {
   const terms = termSet(word);
   const prompt = sample(terms, random);
   const answerTerm = randomAnswerForPrompt(word, prompt, random);
-  const templates = [
-    {
-      q: (a) => `Although the committee's report devoted more space to funding and staffing, its central claim depended on the expression "${a}", which was used to connect two regional schemes that at first seemed unrelated.`,
-      p: (b) => `In the later discussion, after several apparently separate examples had been introduced, the same relationship was described with the phrase "${b}", but only after the author had shifted attention to the assumptions behind the projects.`,
-    },
-    {
-      q: (a) => `When the survey results were first released, several commentators focused on the dramatic figures, but the researchers treated "${a}" as the key wording because it captured the behavioural change that emerged only after the policy became routine.`,
-      p: (b) => `The passage later returns to the same idea through "${b}", placing it in a paragraph about family routines rather than in the earlier section on official regulations.`,
-    },
-    {
-      q: (a) => `Rather than presenting the discovery as a sudden breakthrough, the article introduces "${a}" while describing a long period in which minor observations, many of them dismissed at the time, gradually changed the interpretation of the evidence.`,
-      p: (b) => `Only near the end does the writer use "${b}" to refer back to that interpretation, making the replacement harder to notice because it appears after a discussion of methods and chronology.`,
-    },
-    {
-      q: (a) => `In the account of the coastal settlement, the wording "${a}" is attached not to the construction of higher barriers, but to a more gradual redesign of public spaces in response to changing water movement.`,
-      p: (b) => `The same idea is expressed later through "${b}", although it is embedded in a longer sentence about streets, parks and drainage channels rather than stated beside the original term.`,
-    },
-    {
-      q: (a) => `The writer's criticism is indirect: instead of saying that the model failed, she uses "${a}" in a clause about factors that local residents considered obvious but that the researchers initially treated as secondary.`,
-      p: (b) => `This weakness is restated in the following paragraph with "${b}", where the discussion moves from measurable variables to less visible social pressures.`,
-    },
-    {
-      q: (a) => `Although the experiment was designed to examine memory, the phrase "${a}" appears in a section about participants noticing minor differences only after they were required to justify their choices.`,
-      p: (b) => `The passage later replaces that wording with "${b}", but the replacement is separated from the original by a description of the images and the testing procedure.`,
-    },
-  ];
-  const template = sample(templates, random);
+  const template = sample(sentenceTemplatesFor(word), random);
   const distractors = shuffle(pool.filter((item) => item.id !== word.id), random)
     .slice(0, 3)
     .map((item) => `${item.word} = ${item.primary_synonym}`);
@@ -593,10 +567,82 @@ function makeSentenceQuestion(word, pool, random) {
     meaning_cn: word.primary_meaning_cn,
     answer: `${prompt} = ${answerTerm}`,
     other_replacements: terms.filter((term) => term !== prompt && term !== answerTerm),
-    question_sentence_seed: template.q(prompt),
-    passage_sentence_seed: template.p(answerTerm),
+    question_sentence_seed: template.q(prompt, word),
+    passage_sentence_seed: template.p(answerTerm, word),
     options: shuffle([`${prompt} = ${answerTerm}`, ...distractors], random),
   };
+}
+
+function sentenceTemplatesFor(word) {
+  const pos = (word.part_of_speech || []).join(" ");
+  if (pos.includes("v")) return verbSentenceTemplates();
+  if (pos.includes("adj")) return adjectiveSentenceTemplates();
+  if (pos.includes("adv")) return adverbSentenceTemplates();
+  return nounSentenceTemplates();
+}
+
+function verbSentenceTemplates() {
+  return [
+    {
+      q: (a) => `Although early accounts placed most of the blame on poor administration, later fieldwork showed that seasonal employment, limited transport and rising rents all helped to ${a} the pattern that researchers had first noticed in coastal towns.`,
+      p: (b) => `The passage later argues that the same pattern was ${b} not by a single policy failure, but by several social pressures that became visible only after household interviews were compared with migration records.`,
+    },
+    {
+      q: (a) => `Before the scheme was expanded, officials assumed that residents would ${a} their routines quickly, yet interviews conducted six months later suggested that the change was slower and more uneven than the initial figures implied.`,
+      p: (b) => `In the following paragraph, the writer notes that families had begun to ${b} daily travel and shopping habits only after the new timetable had become predictable.`,
+    },
+    {
+      q: (a) => `The experiment did not simply ask participants to remember the images; it required them to ${a} subtle differences between scenes after a delay, when the most obvious details were no longer useful.`,
+      p: (b) => `This ability to ${b} small distinctions is discussed again near the end of the passage, but it is linked there to attention rather than memory itself.`,
+    },
+  ];
+}
+
+function adjectiveSentenceTemplates() {
+  return [
+    {
+      q: (a) => `The committee accepted that the new material was ${a}, but it argued that the problem was less its origin than the way it behaved after years of exposure to heat, salt and repeated cleaning.`,
+      p: (b) => `Later in the passage, the same material is described as ${b} while the writer explains why its long-term performance surprised engineers who had expected natural fibres to last longer.`,
+    },
+    {
+      q: (a) => `Although the initial explanation seemed ${a}, the researchers were cautious because the evidence came from a narrow sample and did not include communities living outside the survey area.`,
+      p: (b) => `The author returns to this limitation in the final section, describing the conclusion as ${b} only when it is applied to regions with similar economic conditions.`,
+    },
+    {
+      q: (a) => `The most ${a} feature of the archive was not the number of documents it contained, but the way small administrative notes revealed changes that official reports had ignored.`,
+      p: (b) => `In a later paragraph, this archive is treated as ${b} because it preserves evidence of routine decisions that rarely appear in public records.`,
+    },
+  ];
+}
+
+function adverbSentenceTemplates() {
+  return [
+    {
+      q: (a) => `The species spread ${a} across the valley, but the movement was difficult to measure because many of the changes occurred between the annual surveys.`,
+      p: (b) => `The writer later says that the population expanded ${b}, especially in areas where abandoned farmland provided temporary shelter.`,
+    },
+    {
+      q: (a) => `The policy was introduced ${a}, despite warnings that schools would need more time to train staff and adapt their assessment procedures.`,
+      p: (b) => `This timetable is later described as being implemented ${b}, a decision that made the reform appear more successful in official reports than it was in classrooms.`,
+    },
+  ];
+}
+
+function nounSentenceTemplates() {
+  return [
+    {
+      q: (a) => `The report treats the ${a} between rainfall and crop failure as indirect, since local storage practices and access to credit often determined whether a dry season became a serious crisis.`,
+      p: (b) => `In the next section, the same ${b} is examined through village records, which show that two farms facing similar weather could experience very different outcomes.`,
+    },
+    {
+      q: (a) => `One unexpected ${a} of the transport scheme was that smaller markets became more dependent on distant suppliers, even though travel times had been reduced.`,
+      p: (b) => `The passage later describes this ${b} as a reminder that improved infrastructure can change local trade in ways planners do not anticipate.`,
+    },
+    {
+      q: (a) => `The author questions the ${a} that technological change alone explains the decline, because several workshops had already lost skilled workers before new machines were introduced.`,
+      p: (b) => `This ${b} is challenged again when the writer compares employment records with letters from factory owners who were worried about training costs.`,
+    },
+  ];
 }
 
 function answerSentence(chosen) {
