@@ -6,8 +6,7 @@ const APP_SHELL = [
   "./app.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
-  "./ielts538_json_enriched/words.json",
-  "./ielts538_json_enriched/sentence_pair_seeds.json"
+  "./ielts538_json_enriched/words.json"
 ];
 
 self.addEventListener("install", (event) => {

@@ -4,7 +4,6 @@ const LEGACY_STORE_KEY = "ielts538.orderedTrainer.v1";
 const REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30];
 
 let words = [];
-let sentenceSeeds = [];
 let todayWords = [];
 let currentView = "home";
 let learnIndex = 0;
@@ -126,12 +125,8 @@ function sample(items, random = Math.random) {
 }
 
 async function loadData() {
-  const [wordData, seedData] = await Promise.all([
-    fetch(DATA_PATH + "words.json").then((res) => res.json()),
-    fetch(DATA_PATH + "sentence_pair_seeds.json").then((res) => (res.ok ? res.json() : [])),
-  ]);
+  const wordData = await fetch(DATA_PATH + "words.json").then((res) => res.json());
   words = wordData.slice().sort((a, b) => (a.source_rank || a.id) - (b.source_rank || b.id));
-  sentenceSeeds = Array.isArray(seedData) ? seedData : [];
   buildTodayWords();
   buildQuizPlan();
 }
@@ -535,13 +530,8 @@ function checkMatch() {
   renderSummary();
 }
 
-function sentencePool() {
-  const ids = new Set(learnedPool().map((word) => word.id));
-  return sentenceSeeds.filter((seed) => ids.has(seed.word_id));
-}
-
 function renderSentence() {
-  const pool = sentencePool();
+  const pool = learnedPool();
   if (!pool.length) {
     $("#sentenceProgress").textContent = "暂无句子数据";
     $("#questionSentence").textContent = "当前词组还没有可用句子。";
@@ -552,14 +542,61 @@ function renderSentence() {
   const today = todayKey();
   const answered = state.sentenceByDay[today]?.answered || 0;
   const random = seededRandom(hashText(`${today}:sentence:${answered}`));
-  const seed = sample(pool, random);
-  const distractors = shuffle(pool.filter((item) => item.id !== seed.id), random).slice(0, 3).map((item) => item.answer);
-  sentenceItem = { ...seed, options: shuffle([seed.answer, ...distractors], random) };
+  const word = sample(pool, random);
+  sentenceItem = makeSentenceQuestion(word, pool, random);
   $("#sentenceProgress").textContent = `句子识别 · ${answered + 1}`;
-  $("#questionSentence").textContent = seed.question_sentence_seed;
-  $("#passageSentence").textContent = seed.passage_sentence_seed;
+  $("#questionSentence").textContent = sentenceItem.question_sentence_seed;
+  $("#passageSentence").textContent = sentenceItem.passage_sentence_seed;
   $("#sentenceFeedback").className = "feedback hidden";
   drawQuestion(sentenceItem, "#sentenceOptions", answerSentence);
+}
+
+function makeSentenceQuestion(word, pool, random) {
+  const terms = termSet(word);
+  const prompt = sample(terms, random);
+  const answerTerm = randomAnswerForPrompt(word, prompt, random);
+  const templates = [
+    {
+      q: (a) => `Although the committee's report devoted more space to funding and staffing, its central claim depended on the expression "${a}", which was used to connect two regional schemes that at first seemed unrelated.`,
+      p: (b) => `In the later discussion, after several apparently separate examples had been introduced, the same relationship was described with the phrase "${b}", but only after the author had shifted attention to the assumptions behind the projects.`,
+    },
+    {
+      q: (a) => `When the survey results were first released, several commentators focused on the dramatic figures, but the researchers treated "${a}" as the key wording because it captured the behavioural change that emerged only after the policy became routine.`,
+      p: (b) => `The passage later returns to the same idea through "${b}", placing it in a paragraph about family routines rather than in the earlier section on official regulations.`,
+    },
+    {
+      q: (a) => `Rather than presenting the discovery as a sudden breakthrough, the article introduces "${a}" while describing a long period in which minor observations, many of them dismissed at the time, gradually changed the interpretation of the evidence.`,
+      p: (b) => `Only near the end does the writer use "${b}" to refer back to that interpretation, making the replacement harder to notice because it appears after a discussion of methods and chronology.`,
+    },
+    {
+      q: (a) => `In the account of the coastal settlement, the wording "${a}" is attached not to the construction of higher barriers, but to a more gradual redesign of public spaces in response to changing water movement.`,
+      p: (b) => `The same idea is expressed later through "${b}", although it is embedded in a longer sentence about streets, parks and drainage channels rather than stated beside the original term.`,
+    },
+    {
+      q: (a) => `The writer's criticism is indirect: instead of saying that the model failed, she uses "${a}" in a clause about factors that local residents considered obvious but that the researchers initially treated as secondary.`,
+      p: (b) => `This weakness is restated in the following paragraph with "${b}", where the discussion moves from measurable variables to less visible social pressures.`,
+    },
+    {
+      q: (a) => `Although the experiment was designed to examine memory, the phrase "${a}" appears in a section about participants noticing minor differences only after they were required to justify their choices.`,
+      p: (b) => `The passage later replaces that wording with "${b}", but the replacement is separated from the original by a description of the images and the testing procedure.`,
+    },
+  ];
+  const template = sample(templates, random);
+  const distractors = shuffle(pool.filter((item) => item.id !== word.id), random)
+    .slice(0, 3)
+    .map((item) => `${item.word} = ${item.primary_synonym}`);
+  return {
+    id: `generated_${word.id}_${prompt}_${answerTerm}`,
+    word_id: word.id,
+    target_word: word.word,
+    replacement: answerTerm,
+    meaning_cn: word.primary_meaning_cn,
+    answer: `${prompt} = ${answerTerm}`,
+    other_replacements: terms.filter((term) => term !== prompt && term !== answerTerm),
+    question_sentence_seed: template.q(prompt),
+    passage_sentence_seed: template.p(answerTerm),
+    options: shuffle([`${prompt} = ${answerTerm}`, ...distractors], random),
+  };
 }
 
 function answerSentence(chosen) {
