@@ -26,27 +26,51 @@
               <option value="30">30</option>
             </select>
           </label>
+          <button id="installBtn" class="ghost-btn hidden">安装到桌面</button>
           <button id="resetTodayBtn" class="ghost-btn">重置今日</button>
         </div>
       </header>
 
       <nav class="tabs" aria-label="训练模式">
-        <button class="tab active" data-view="learn">今日学习</button>
+        <button class="tab active" data-view="home">今日路径</button>
+        <button class="tab" data-view="learn">学习</button>
         <button class="tab" data-view="review">复习</button>
         <button class="tab" data-view="quiz">选择题</button>
         <button class="tab" data-view="match">连线题</button>
+        <button class="tab" data-view="sentence">句子</button>
         <button class="tab" data-view="mistakes">错题本</button>
+        <button class="tab" data-view="stats">统计</button>
+        <button class="tab" data-view="data">数据</button>
       </nav>
 
       <section class="summary">
         <div><span>今日词组</span><strong id="summaryWords">0</strong></div>
-        <div><span>已学</span><strong id="summarySeen">0</strong></div>
+        <div><span>已学</span><strong id="summarySeen">0/0</strong></div>
         <div><span>今日测试</span><strong id="summaryQuiz">0/0</strong></div>
         <div><span>待复习</span><strong id="summaryReview">0</strong></div>
         <div><span>错题</span><strong id="summaryMistakes">0</strong></div>
       </section>
 
-      <section id="learn" class="view active">
+      <section id="home" class="view active">
+        <div class="home-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>今日学习路径</h2>
+                <p>建议按顺序完成，先处理到期复习，再学新词。</p>
+              </div>
+              <button id="startNextTaskBtn" class="primary-btn">继续下一项</button>
+            </div>
+            <div id="pathList" class="path-list"></div>
+          </section>
+          <section class="panel">
+            <h2>今日结果</h2>
+            <div id="finishReport" class="finish-report"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="learn" class="view">
         <div class="panel word-card">
           <div class="card-count" id="learnProgress">1 / 20</div>
           <button id="speakBtn" class="speak-btn" title="播放读音">Play</button>
@@ -74,25 +98,31 @@
       </section>
 
       <section id="review" class="view">
-        <div class="panel word-card">
-          <div class="card-count" id="reviewProgress">待复习 0</div>
-          <button id="reviewSpeakBtn" class="speak-btn" title="播放读音">Play</button>
-          <h2 id="reviewWordTitle">暂无复习</h2>
-          <div class="word-meta" id="reviewWordMeta"></div>
-          <div class="answer-box">
-            <div>
-              <span>最常见替换</span>
-              <strong id="reviewPrimarySynonym"></strong>
+        <div class="review-grid">
+          <div class="panel word-card">
+            <div class="card-count" id="reviewProgress">待复习 0</div>
+            <button id="reviewSpeakBtn" class="speak-btn" title="播放读音">Play</button>
+            <h2 id="reviewWordTitle">暂无复习</h2>
+            <div class="word-meta" id="reviewWordMeta"></div>
+            <div class="answer-box">
+              <div>
+                <span>最常见替换</span>
+                <strong id="reviewPrimarySynonym"></strong>
+              </div>
+              <div>
+                <span>全部替换</span>
+                <p id="reviewAllSynonyms"></p>
+              </div>
             </div>
-            <div>
-              <span>全部替换</span>
-              <p id="reviewAllSynonyms"></p>
+            <div class="card-actions">
+              <button class="danger-btn" data-review-grade="again">不会</button>
+              <button class="warn-btn" data-review-grade="hard">模糊</button>
+              <button class="primary-btn" data-review-grade="good">认识</button>
             </div>
           </div>
-          <div class="card-actions">
-            <button class="danger-btn" data-review-grade="again">不会</button>
-            <button class="warn-btn" data-review-grade="hard">模糊</button>
-            <button class="primary-btn" data-review-grade="good">认识</button>
+          <div class="panel">
+            <h2>复习队列</h2>
+            <div id="reviewQueue" class="queue-list"></div>
           </div>
         </div>
       </section>
@@ -112,7 +142,7 @@
 
       <section id="match" class="view">
         <div class="panel">
-          <div class="match-head">
+          <div class="panel-head">
             <div>
               <h2>今日词组连线</h2>
               <p>左边是今日主词，右边是最常见替换。</p>
@@ -127,16 +157,72 @@
         </div>
       </section>
 
+      <section id="sentence" class="view">
+        <div class="panel quiz-card">
+          <div class="card-count" id="sentenceProgress">句子识别</div>
+          <div class="sentence-block">
+            <span>题目句</span>
+            <p id="questionSentence"></p>
+          </div>
+          <div class="sentence-block">
+            <span>原文句</span>
+            <p id="passageSentence"></p>
+          </div>
+          <p class="prompt-label">选择对应的同义替换</p>
+          <div id="sentenceOptions" class="options"></div>
+          <div id="sentenceFeedback" class="feedback hidden"></div>
+          <div class="card-actions">
+            <button id="nextSentence" class="primary-btn">下一题</button>
+          </div>
+        </div>
+      </section>
+
       <section id="mistakes" class="view">
         <div class="panel">
-          <div class="match-head">
+          <div class="panel-head">
             <div>
               <h2>错题本</h2>
-              <p>选择题和连线题答错后会进入这里，并自动加入复习。</p>
+              <p>答错后会自动进入这里，并加入复习。</p>
             </div>
-            <button id="clearMistakesBtn" class="ghost-btn">清空错题</button>
+            <div class="card-actions compact">
+              <button id="mistakeRetestBtn" class="primary-btn">只练错题</button>
+              <button id="clearMistakesBtn" class="ghost-btn">清空错题</button>
+            </div>
           </div>
           <div id="mistakeList" class="mistake-list"></div>
+        </div>
+      </section>
+
+      <section id="stats" class="view">
+        <div class="stats-grid">
+          <div class="panel"><span>已学词数</span><strong id="statLearned">0</strong></div>
+          <div class="panel"><span>掌握词数</span><strong id="statMastered">0</strong></div>
+          <div class="panel"><span>总正确率</span><strong id="statAccuracy">0%</strong></div>
+          <div class="panel"><span>最近 7 天</span><strong id="statSevenDays">0</strong></div>
+        </div>
+        <div class="home-grid">
+          <section class="panel">
+            <h2>错误最多的词</h2>
+            <div id="topMistakes" class="mistake-list"></div>
+          </section>
+          <section class="panel">
+            <h2>薄弱语义分类</h2>
+            <div id="weakCategories" class="queue-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="data" class="view">
+        <div class="panel">
+          <h2>进度管理</h2>
+          <p class="muted">学习记录保存在当前浏览器。换手机或换浏览器不会自动同步。</p>
+          <div class="card-actions">
+            <button id="exportBtn" class="primary-btn">导出学习记录</button>
+            <button id="importBtn" class="ghost-btn">导入学习记录</button>
+            <button id="resetAllBtn" class="danger-btn">重置全部进度</button>
+            <input id="importFile" class="hidden" type="file" accept="application/json">
+          </div>
+          <div id="dataFeedback" class="feedback hidden"></div>
         </div>
       </section>
     </main>

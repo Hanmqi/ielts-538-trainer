@@ -27,7 +27,8 @@ body {
 }
 
 button,
-select {
+select,
+input {
   font: inherit;
 }
 
@@ -36,12 +37,13 @@ button {
 }
 
 .app {
-  width: min(1120px, calc(100vw - 32px));
+  width: min(1160px, calc(100vw - 32px));
   margin: 0 auto;
   padding: 24px 0 40px;
 }
 
-.topbar {
+.topbar,
+.panel-head {
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -49,9 +51,15 @@ button {
   margin-bottom: 18px;
 }
 
+.eyebrow,
+.muted,
+.panel-head p,
+.match-head p {
+  color: var(--muted);
+}
+
 .eyebrow {
   margin: 0 0 6px;
-  color: var(--muted);
   font-size: 14px;
 }
 
@@ -66,14 +74,18 @@ h1 {
 }
 
 h2 {
-  font-size: 34px;
+  font-size: 30px;
 }
 
-.settings {
+.settings,
+.card-actions {
   display: flex;
   align-items: end;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.settings {
   justify-content: flex-end;
 }
 
@@ -108,7 +120,8 @@ select {
 .warn-btn,
 .speak-btn,
 .option-btn,
-.match-btn {
+.match-btn,
+.path-item {
   min-height: 42px;
   border-radius: 6px;
   border: 1px solid var(--line);
@@ -151,37 +164,47 @@ select {
 
 .ghost-btn:hover,
 .option-btn:hover,
-.match-btn:hover {
+.match-btn:hover,
+.path-item:hover {
   border-color: var(--blue);
 }
 
-.summary {
+.summary,
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 16px;
 }
 
+.stats-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .summary div,
-.panel {
+.panel,
+.stats-grid .panel {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
 }
 
-.summary div {
+.summary div,
+.stats-grid .panel {
   padding: 14px;
 }
 
-.summary span {
+.summary span,
+.stats-grid span {
   display: block;
   color: var(--muted);
   font-size: 14px;
   margin-bottom: 6px;
 }
 
-.summary strong {
+.summary strong,
+.stats-grid strong {
   font-size: 26px;
 }
 
@@ -195,6 +218,13 @@ select {
 
 .panel {
   padding: 22px;
+}
+
+.home-grid,
+.review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 16px;
 }
 
 .word-card,
@@ -222,14 +252,25 @@ select {
   margin: 12px 0 22px;
 }
 
-.answer-box {
+.answer-box,
+.path-list,
+.queue-list,
+.mistake-list,
+.finish-report {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+}
+
+.answer-box {
   margin-top: 24px;
 }
 
 .answer-box div,
-.feedback {
+.feedback,
+.mistake-item,
+.queue-row,
+.report-line,
+.sentence-block {
   background: var(--soft);
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -237,7 +278,8 @@ select {
 }
 
 .answer-box span,
-.prompt-label {
+.prompt-label,
+.sentence-block span {
   display: block;
   color: var(--muted);
   font-size: 14px;
@@ -249,24 +291,26 @@ select {
   font-size: 26px;
 }
 
-.answer-box p {
+.answer-box p,
+.sentence-block p {
   margin: 0;
   font-size: 20px;
   line-height: 1.5;
 }
 
 .card-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
   margin-top: 22px;
+}
+
+.card-actions.compact {
+  margin-top: 0;
 }
 
 .options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 26px;
+  margin-top: 20px;
 }
 
 .option-btn {
@@ -299,21 +343,29 @@ select {
   background: var(--red-soft);
 }
 
-.hidden {
-  display: none;
+.path-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  text-align: left;
 }
 
-.match-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: start;
-  margin-bottom: 18px;
+.path-item.done {
+  background: var(--green-soft);
 }
 
-.match-head p {
+.path-item span,
+.queue-row span,
+.report-line span,
+.mistake-item span {
   color: var(--muted);
-  margin: 8px 0 0;
+}
+
+.queue-row,
+.report-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
 }
 
 .match-board {
@@ -325,32 +377,6 @@ select {
 .match-col {
   display: grid;
   gap: 10px;
-}
-
-.mistake-list {
-  display: grid;
-  gap: 10px;
-}
-
-.mistake-item {
-  background: var(--soft);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 14px;
-}
-
-.mistake-item strong {
-  display: block;
-  margin-bottom: 6px;
-}
-
-.mistake-item span {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.mistake-item p {
-  margin: 8px 0 0;
 }
 
 .match-btn {
@@ -370,6 +396,19 @@ select {
   text-decoration: line-through;
 }
 
+.mistake-item strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mistake-item p {
+  margin: 8px 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
 .loading {
   position: fixed;
   inset: 0;
@@ -384,14 +423,14 @@ select {
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 820px) {
   .app {
     width: min(100vw - 24px, 560px);
     padding-top: 16px;
   }
 
   .topbar,
-  .match-head {
+  .panel-head {
     flex-direction: column;
     align-items: stretch;
   }
@@ -406,8 +445,11 @@ select {
   }
 
   .summary,
+  .stats-grid,
   .options,
-  .match-board {
+  .match-board,
+  .home-grid,
+  .review-grid {
     grid-template-columns: 1fr;
   }
 
@@ -416,7 +458,7 @@ select {
   }
 
   h2 {
-    font-size: 28px;
+    font-size: 26px;
     overflow-wrap: anywhere;
   }
 
